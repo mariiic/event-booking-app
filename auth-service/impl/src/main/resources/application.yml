@@ -1,0 +1,9 @@
+security:
+  jwt:
+    access:
+      expiration:
+        minutes: ${JWT_ACCESS_EXPIRATION_MINUTES}
+      secret: ${JWT_ACCESS_SECRET}
+    refresh:
+      expiration:
+        days: ${JWT_REFRESH_EXPIRATION_DAYS}
