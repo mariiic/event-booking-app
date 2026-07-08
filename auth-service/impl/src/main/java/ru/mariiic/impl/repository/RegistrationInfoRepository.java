@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class RegistrationInfoRepository {
-    @Value("spring.redis.ttl")
+    @Value("${spring.redis.ttl}")
     private int ttl;
 
     private final RedisTemplate<String, Object> redisTemplate;

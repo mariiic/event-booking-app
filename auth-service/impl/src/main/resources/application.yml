@@ -7,3 +7,14 @@ security:
     refresh:
       expiration:
         days: ${JWT_REFRESH_EXPIRATION_DAYS}
+
+spring:
+  redis:
+    ttl: 15
+
+outbox:
+  batch:
+    size: 50
+  processing:
+    fixedRate: 3s
+  attempts: 5

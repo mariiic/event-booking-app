@@ -1,8 +1,7 @@
 package ru.mariiic.impl.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -28,9 +27,32 @@ public class RabbitConfig {
     }
 
     @Bean
-    public TopicExchange orderExchange() {
+    public TopicExchange eventBookingExchange() {
         String exchangeName = RabbitNaming.EVENT_BOOKING_EXCHANGE;
         return new TopicExchange(exchangeName, true, false);
     }
 
+    @Bean
+    public Queue userQueue() {
+        return QueueBuilder.durable(RabbitNaming.USER_SERVICE_QUEUE).build();
+    }
+
+    @Bean
+    public Queue notificationQueue() {
+        return QueueBuilder.durable(RabbitNaming.NOTIFICATION_SERVICE_QUEUE).build();
+    }
+
+    @Bean
+    public Binding userBinding() {
+        return BindingBuilder.bind(userQueue())
+                .to(eventBookingExchange())
+                .with("#.user.#");
+    }
+
+    @Bean
+    public Binding notificationBinding() {
+        return BindingBuilder.bind(notificationQueue())
+                .to(eventBookingExchange())
+                .with("#.notification.#");
+    }
 }

@@ -1,6 +1,9 @@
 package ru.mariiic.impl.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,10 @@ import ru.mariiic.impl.dto.CustomerRegistrationInfo;
 import ru.mariiic.impl.dto.OrganizerRegistrationInfo;
 import ru.mariiic.impl.dto.UserRegistrationInfo;
 import ru.mariiic.impl.exception.*;
+import ru.mariiic.impl.model.OutboxNode;
 import ru.mariiic.impl.model.UserAccount;
 import ru.mariiic.impl.publisher.AuthEventPublisher;
+import ru.mariiic.impl.repository.OutboxRepository;
 import ru.mariiic.impl.repository.RefreshTokenRepository;
 import ru.mariiic.impl.repository.RegistrationInfoRepository;
 import ru.mariiic.impl.repository.UserRepository;
@@ -30,13 +35,19 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    @Value("${outbox.attempts}")
+    private int attempts;
+
     private final JwtService jwtService;
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
     private final UserRepository userRepository;
+    private final OutboxRepository outboxRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ObjectMapper objectMapper;
 
     private final AuthEventPublisher authEventPublisher;
 
@@ -110,8 +121,8 @@ public class AuthService {
         authEventPublisher.publishStartEmailConfirmationCommand(new StartEmailConfirmation(request.email(), verificationCode));
     }
 
-    //todo почитать про @Transactional в методах с репозиториями разных бд
-    public TokenCoupleResponse confirmEmail(EmailConfirmRequest confirmRequest) {
+    @Transactional
+    public TokenCoupleResponse confirmEmail(EmailConfirmRequest confirmRequest) throws JsonProcessingException {
         Optional<Object> user = registrationInfoRepository.getUser(confirmRequest.email());
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("email %s not found".formatted(confirmRequest.email()));
@@ -132,12 +143,16 @@ public class AuthService {
                     null
             );
             userAccount = userRepository.save(userAccount);
-            authEventPublisher.publishCustomerRegisteredEvent(new CustomerRegisteredEvent(
+            CustomerRegisteredEvent customerRegisteredEvent = new CustomerRegisteredEvent(
                     userAccount.getUserId(),
                     userAccount.getUsername(),
                     userAccount.getEmail(),
                     registrationInfo.getBirthDate()
-            ));
+            );
+            outboxRepository.save(new OutboxNode(CustomerRegisteredEvent.class.getTypeName(),
+                    objectMapper.writeValueAsString(customerRegisteredEvent),
+                    attempts
+                    ));
             return jwtService.generateTokenCouple(userAccount);
         } else if (fromOptional instanceof OrganizerRegistrationInfo){
             OrganizerRegistrationInfo registrationInfo = (OrganizerRegistrationInfo) fromOptional;
@@ -148,13 +163,17 @@ public class AuthService {
                     Set.of(UserAuthority.CREATE_EVENTS, UserAuthority.DELETE_EVENTS, UserAuthority.MODIFY_EVENTS)
             );
             userAccount = userRepository.save(userAccount);
-            authEventPublisher.publishOrganizerRegisteredEvent(new OrganizerRegisteredEvent(
+            OrganizerRegisteredEvent organizerRegisteredEvent = new OrganizerRegisteredEvent(
                     userAccount.getUserId(),
                     userAccount.getUsername(),
                     userAccount.getEmail(),
                     registrationInfo.getContactPerson(),
                     registrationInfo.getDescription(),
                     registrationInfo.getWebsiteUrl()
+            );
+            outboxRepository.save(new OutboxNode(OrganizerRegisteredEvent.class.getTypeName(),
+                    objectMapper.writeValueAsString(organizerRegisteredEvent),
+                    attempts
             ));
             return jwtService.generateTokenCouple(userAccount);
         }
