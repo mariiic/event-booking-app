@@ -9,17 +9,17 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>ru.mariiic</groupId>
-    <artifactId>impl</artifactId>
+    <artifactId>auth-service-impl</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>impl</name>
-    <description>impl</description>
+    <name>auth-service-impl</name>
+    <description>auth-service-impl</description>
     <properties>
         <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>ru.mariiic</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>auth-service-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

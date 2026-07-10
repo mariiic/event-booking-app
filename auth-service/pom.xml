@@ -15,8 +15,8 @@
     <description>auth-service</description>
     <packaging>pom</packaging>
     <modules>
-        <module>api</module>
-        <module>impl</module>
+        <module>auth-service-api</module>
+        <module>auth-service-impl</module>
     </modules>
     <properties>
         <java.version>21</java.version>
