@@ -121,6 +121,7 @@ public class AuthService {
         authEventPublisher.publishStartEmailConfirmationCommand(new StartEmailConfirmation(request.email(), verificationCode));
     }
 
+    //todo разделить подтверждение на обновление почты и на создание профиля
     @Transactional
     public TokenCoupleResponse confirmEmail(EmailConfirmRequest confirmRequest) throws JsonProcessingException {
         Optional<Object> user = registrationInfoRepository.getUser(confirmRequest.email());
@@ -139,7 +140,7 @@ public class AuthService {
             userAccount = new UserAccount(registrationInfo.getUsername(),
                     registrationInfo.getPasswordHash(),
                     registrationInfo.getEmail(),
-                    UserRole.CLIENT,
+                    UserRole.CUSTOMER,
                     null
             );
             userAccount = userRepository.save(userAccount);

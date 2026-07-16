@@ -3,9 +3,7 @@ package ru.mariiic.impl.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mariiic.api.AuthApi;
-import ru.mariiic.api.request.ChangePasswordRequest;
-import ru.mariiic.api.request.RefreshTokenRequest;
-import ru.mariiic.api.request.UserLoginRequest;
+import ru.mariiic.api.request.*;
 import ru.mariiic.api.response.TokenCoupleResponse;
 import ru.mariiic.impl.service.AuthService;
 import ru.mariiic.securitystarter.dto.UserInfo;
@@ -33,5 +31,15 @@ public class AuthController implements AuthApi{
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest, UserInfo userInfo) {
         authService.changePassword(changePasswordRequest, userInfo.getUserId());
+    }
+
+    @Override
+    public void changeEmail(ChangeEmailRequest changeEmailRequest, UserInfo userInfo) {
+
+    }
+
+    @Override
+    public void confirmEmail(EmailConfirmRequest request) {
+
     }
 }

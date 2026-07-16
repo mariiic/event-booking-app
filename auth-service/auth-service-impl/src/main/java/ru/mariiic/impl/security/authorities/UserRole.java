@@ -1,7 +1,7 @@
 package ru.mariiic.impl.security.authorities;
 
 public enum UserRole{
-    CLIENT,
+    CUSTOMER,
     ORGANIZER,
     ADMIN,
     MODERATOR
