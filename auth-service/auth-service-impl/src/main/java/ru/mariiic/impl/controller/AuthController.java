@@ -1,6 +1,7 @@
 package ru.mariiic.impl.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mariiic.api.AuthApi;
 import ru.mariiic.api.request.*;
@@ -35,11 +36,11 @@ public class AuthController implements AuthApi{
 
     @Override
     public void changeEmail(ChangeEmailRequest changeEmailRequest, UserInfo userInfo) {
-
+        authService.changeEmail(changeEmailRequest, userInfo.getUserId());
     }
 
     @Override
-    public void confirmEmail(EmailConfirmRequest request) {
-
+    public void confirmEmail(EmailConfirmRequest request, @AuthenticationPrincipal UserInfo userInfo) {
+        authService.confirmEmailOnChangeEmail(request, userInfo.getUserId());
     }
 }

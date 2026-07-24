@@ -29,5 +29,5 @@ public interface AuthApi {
     void changeEmail(@Valid ChangeEmailRequest changeEmailRequest, @AuthenticationPrincipal UserInfo userInfo);
 
     @PostMapping("/confirm/email")
-    void confirmEmail(@Valid @RequestBody EmailConfirmRequest request);
+    void confirmEmail(@Valid @RequestBody EmailConfirmRequest request, @AuthenticationPrincipal UserInfo userInfo);
 }

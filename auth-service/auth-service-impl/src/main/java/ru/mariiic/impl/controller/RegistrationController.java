@@ -26,6 +26,6 @@ public class RegistrationController implements RegistrationApi {
 
     @Override
     public TokenCoupleResponse confirmEmail(EmailConfirmRequest request) {
-        return authService.confirmEmail(request);
+        return authService.confirmEmailOnRegistration(request);
     }
 }
