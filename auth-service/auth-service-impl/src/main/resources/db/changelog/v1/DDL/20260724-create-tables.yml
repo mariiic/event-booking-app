@@ -1,0 +1,151 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260724-01-create-user
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: user_account
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pk
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_username_uk
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: role
+                  type: varchar(20)
+
+  - changeSet:
+      id: 20260724-02-create-user-authorities
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: user_authorities
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: authority
+                  type: varchar(255)
+        - addPrimaryKey:
+            tableName: user_authorities
+            columnNames: user_id, authority
+            constraintName: user_authorities_pk
+
+  - changeSet:
+      id: 20260724-03-create-outbox
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: outbox
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: outbox_node_pk
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attempts
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message_type
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message_payload
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_authorities
+            columnNames: user_id, authority
+            constraintName: user_authorities_pk
+
+  - changeSet:
+      id: 20260724-04-create-refresh-tokens
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: refresh_tokens_pk
+              - column:
+                  name: token
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: bool
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 20260527-05-add-foreign-keys
+      author: mariia_chhh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: user_authorities
+            baseColumnNames: user_id
+            constraintName: user_authorities_user_id_fk
+            referencedTableName: user_account
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: refresh_tokens
+            baseColumnNames: user_id
+            constraintName: refresh_tokens_user_id_fk
+            referencedTableName: user_account
+            referencedColumnNames: id
+            onDelete: CASCADE
