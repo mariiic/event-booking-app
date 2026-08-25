@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260729-01-create-customer
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: customer_pk
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: customer_username_uk
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: birth_date
+                  type: timestamptz
+
+  - changeSet:
+      id: 20260729-02-create-organizer
+      author: mariia_chhh
+      changes:
+        - createTable:
+            tableName: organizer
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: organizer_pk
+                    nullable: false
+              - column:
+                  name: organization_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: organization_name_uk
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contact_person
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: website_url
+                  type: varchar(255)
