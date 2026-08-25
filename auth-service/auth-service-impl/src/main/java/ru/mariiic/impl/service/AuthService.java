@@ -81,10 +81,10 @@ public class AuthService {
     }
 
     public void registerCustomer(CustomerRegistrationRequest request) {
-        if (!existsByUsername(request.username())) {
+        if (existsByUsername(request.username())) {
             throw new UsernameAlreadyExistsException("username %s already exists".formatted(request.username()));
         }
-        if (!existsByEmail(request.email())) {
+        if (existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("email %s already exists".formatted(request.email()));
         }
         String passwordHash = passwordEncoder.encode(request.password());
@@ -102,10 +102,10 @@ public class AuthService {
 
     //todo модерация описания в OrganizerRegistrationRequest
     public void registerOrganizer(OrganizerRegistrationRequest request) {
-        if (!existsByUsername(request.organizationName())) {
+        if (existsByUsername(request.organizationName())) {
             throw new UsernameAlreadyExistsException("username %s already exists".formatted(request.organizationName()));
         }
-        if (!existsByEmail(request.email())) {
+        if (existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("email %s already exists".formatted(request.email()));
         }
         String passwordHash = passwordEncoder.encode(request.password());
@@ -211,7 +211,7 @@ public class AuthService {
         UserEmailChangeInfo userEmailChangeInfo = (UserEmailChangeInfo) confirmed;
         if (emailConfirmRequest.email() == null
                 || emailConfirmRequest.email().isEmpty()
-                || emailConfirmRequest.email() != userEmailChangeInfo.newEmail()) {
+                || !emailConfirmRequest.email().equals(userEmailChangeInfo.newEmail())) {
             throw new IncorrectEmailConfirmationException("email address mismatch");
         }
         if (emailConfirmRequest.emailConfirm() == null

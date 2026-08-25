@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.mariiic.event.CustomerRegisteredEvent;
+import ru.mariiic.event.EmailChangedEvent;
 import ru.mariiic.event.OrganizerRegisteredEvent;
 import ru.mariiic.event.StartEmailConfirmation;
 
@@ -26,6 +27,10 @@ public class OutboxDispatcher {
             }
             case "StartEmailConfirmationEvent" -> {
                 authEventPublisher.publishStartEmailConfirmationCommand(objectMapper.readValue(eventPayload, StartEmailConfirmation.class));
+                return true;
+            }
+            case "EmailChangedEvent" -> {
+                authEventPublisher.publishEmailChangedEvent(objectMapper.readValue(eventPayload, EmailChangedEvent.class));
                 return true;
             }
             default -> {

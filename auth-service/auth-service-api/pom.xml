@@ -13,21 +13,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>auth-service-api</name>
     <description>auth-service-api</description>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <properties>
         <java.version>21</java.version>
     </properties>
     <dependencies>
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

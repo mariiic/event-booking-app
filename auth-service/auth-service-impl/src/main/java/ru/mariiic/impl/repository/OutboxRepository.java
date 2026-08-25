@@ -56,15 +56,15 @@ public class OutboxRepository {
                         id
                     from outbox
                     where status in (:statuses) and attempts > 0
-                    order by createdAt desc 
+                    order by created_at desc 
                     limit :batchSize
                     for update skip locked
                 )
                 returning
                     id,
-                    messageType,
-                    messagePayload,
-                    createdAt,
+                    message_type,
+                    message_payload,
+                    created_at,
                     attempts,
                     status
         """;

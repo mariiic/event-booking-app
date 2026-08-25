@@ -5,6 +5,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.stereotype.Component;
 import ru.mariiic.event.CustomerRegisteredEvent;
+import ru.mariiic.event.EmailChangedEvent;
 import ru.mariiic.event.OrganizerRegisteredEvent;
 import ru.mariiic.event.StartEmailConfirmation;
 import ru.mariiic.util.RabbitNaming;
@@ -39,6 +40,17 @@ public class AuthEventPublisher {
     public void publishOrganizerRegisteredEvent(OrganizerRegisteredEvent event) {
         amqpTemplate.convertAndSend(RabbitNaming.EVENT_BOOKING_EXCHANGE,
                 "auth.user.organizer.registered",
+                event,
+                message -> {
+                    message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                    return message;
+                }
+        );
+    }
+
+    public void publishEmailChangedEvent(EmailChangedEvent event) {
+        amqpTemplate.convertAndSend(RabbitNaming.EVENT_BOOKING_EXCHANGE,
+                "auth.user.email.changed",
                 event,
                 message -> {
                     message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);

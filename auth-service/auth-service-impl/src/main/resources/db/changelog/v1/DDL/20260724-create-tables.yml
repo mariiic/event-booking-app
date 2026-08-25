@@ -88,10 +88,6 @@ databaseChangeLog:
                   type: varchar(150)
                   constraints:
                     nullable: false
-        - addPrimaryKey:
-            tableName: user_authorities
-            columnNames: user_id, authority
-            constraintName: user_authorities_pk
 
   - changeSet:
       id: 20260724-04-create-refresh-tokens

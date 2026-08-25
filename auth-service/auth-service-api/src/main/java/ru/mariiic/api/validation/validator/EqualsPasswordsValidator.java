@@ -3,7 +3,7 @@ package ru.mariiic.api.validation.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ru.mariiic.api.interfaces.PasswordsMatchable;
-import ru.mariiic.impl.validation.annotation.EqualsPasswords;
+import ru.mariiic.api.validation.annotation.EqualsPasswords;
 
 public class EqualsPasswordsValidator implements ConstraintValidator<EqualsPasswords, Object> {
     @Override
